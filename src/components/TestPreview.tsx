@@ -21,7 +21,7 @@ const TestPreview: React.FC = () => {
         </div>
         <button
           type="button"
-          className="bg-black hover:bg-grey-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center"
+          className="bg-black hover:bg-grey-500 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center"
           onClick={() => window.open(mockPdfPath, '_blank')}
         >
           <Download className="h-4 w-4 mr-2" />
