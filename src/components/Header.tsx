@@ -7,7 +7,11 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center">
           <Briefcase className="h-8 w-8 text-blue-600" />
-          <span className="ml-2 text-xl font-bold text-gray-900">CompanyName</span>
+          <img 
+            src="/Stagelink-logotipo-04.png" 
+            alt="Stagelink Logo" 
+            className="ml-2 h-8"
+          />
         </div>
       </div>
     </header>
