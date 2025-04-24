@@ -14,7 +14,7 @@ const TestPreview: React.FC = () => {
           <div className="flex items-center mt-4">
             <FileText className="h-10 w-10 text-black mr-3" />
             <div>
-              <p className="font-medium text-gray-700">{mockPdfName}</p>
+              <p className="font-medium text-gray-900">{mockPdfName}</p>
               <p className="text-sm text-gray-500">PDF Document • 2.4 MB</p>
             </div>
           </div>
