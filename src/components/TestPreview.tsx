@@ -10,10 +10,7 @@ const TestPreview: React.FC = () => {
     <section className="bg-white rounded-lg shadow-md p-6 mb-8">
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Candidate Test Preview</h2>
-          <p className="text-gray-600 mb-4">
-            Download the preview of our assessment test to understand what you'll need to complete as part of your application.
-          </p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Download the preview of our assessment test to understand what you'll need to complete as part of your application.</h2>
           <div className="flex items-center mt-4">
             <FileText className="h-10 w-10 text-blue-600 mr-3" />
             <div>
