@@ -9,7 +9,7 @@ const Header: React.FC = () => {
           <img 
             src="./stagelinklogo.png"
             alt="Stagelink Logo" 
-            className="ml-2 h-8"
+            className="ml-2 h-12"
           />
         </div>
       </div>
