@@ -12,6 +12,7 @@ const TestPreview: React.FC = () => {
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Download the preview of our assessment test to understand what you'll need to complete as part of your application.</h2>
           <div className="flex items-center mt-4">
+            <FileText className="h-10 w-10 text-blue-600 mr-3" />
             <div>
               <p className="font-medium text-gray-900">{mockPdfName}</p>
               <p className="text-sm text-gray-500">PDF Document • 2.4 MB</p>
