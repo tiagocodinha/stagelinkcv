@@ -306,7 +306,7 @@ const ApplicationForm: React.FC = () => {
               px-6 py-3 rounded-md font-medium text-white 
               ${isSubmitting || !isValid 
                 ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-blue-600 hover:bg-blue-700 transition-colors duration-200'}
+                : 'bg-black hover:bg-gray-800 transition-colors duration-200'}
             `}
           >
             {isSubmitting ? 'Submitting...' : 'Submit Application'}
