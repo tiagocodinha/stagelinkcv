@@ -128,14 +128,7 @@ const ApplicationForm: React.FC = () => {
 
   return (
     <div>
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Join Our Team</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          We're looking for talented individuals to help us build amazing products. 
-          Fill out the application below to start your journey with us.
-        </p>
-      </div>
-      
+           
       <TestPreview />
       
       {submitError && (
