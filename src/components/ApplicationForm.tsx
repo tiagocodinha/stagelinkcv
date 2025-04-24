@@ -195,7 +195,7 @@ const ApplicationForm: React.FC = () => {
               render={({ field }) => (
                 <FormInput
                   label="Phone Number"
-                  placeholder="+1 (123) 456-7890"
+                  placeholder="+351 (912345678)"
                   error={errors.phone?.message}
                   required
                   {...field}
