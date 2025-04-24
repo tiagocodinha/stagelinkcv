@@ -3,7 +3,7 @@ import { FileText, Download } from 'lucide-react';
 
 // Mock PDF download - in a real app, this would be a real PDF file
 const mockPdfPath = './CurrículoLilianaGonçalves.pdf';
-const mockPdfName = 'Candidate Assessment Test Preview';
+const mockPdfName = 'Application Briefing';
 
 const TestPreview: React.FC = () => {
   return (
