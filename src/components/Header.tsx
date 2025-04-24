@@ -6,7 +6,6 @@ const Header: React.FC = () => {
     <header className="bg-white shadow-sm fixed top-0 w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center">
-          <Briefcase className="h-8 w-8 text-blue-600" />
           <img 
             src="./Stagelink-logotipo-04.png" 
             alt="Stagelink Logo" 
