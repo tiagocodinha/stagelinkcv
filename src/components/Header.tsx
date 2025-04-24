@@ -8,7 +8,7 @@ const Header: React.FC = () => {
         <div className="flex items-center">
           <Briefcase className="h-8 w-8 text-blue-600" />
           <img 
-            src="/Stagelink-logotipo-04.png" 
+            src="./Stagelink-logotipo-04.png" 
             alt="Stagelink Logo" 
             className="ml-2 h-8"
           />
