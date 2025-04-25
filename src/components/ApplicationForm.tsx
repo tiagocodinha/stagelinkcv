@@ -199,7 +199,7 @@ const ApplicationForm: React.FC = () => {
             </p>
           ) : (
             <p className="text-sm text-gray-500">
-              No file selected ok?
+              No file selected
             </p>
           )}
           <p className="text-sm text-gray-500">
