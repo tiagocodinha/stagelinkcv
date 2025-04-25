@@ -378,7 +378,15 @@ const ApplicationForm: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex justify-end">
+        <div className="flex items-center justify-between">
+          <a
+            href="https://www.stagelink.pt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-black hover:text-gray-700 transition-colors duration-200 font-medium"
+          >
+            About Us
+          </a>
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
