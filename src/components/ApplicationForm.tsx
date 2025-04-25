@@ -194,7 +194,7 @@ const ApplicationForm: React.FC = () => {
             <p className="text-sm text-red-600">{errors.cv.message}</p>
           )}
           {cvFile ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-700">
               Selected file: {cvFile.name}
             </p>
           ) : (
