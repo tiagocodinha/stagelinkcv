@@ -2,7 +2,7 @@ import React from 'react';
 import { FileText, Download } from 'lucide-react';
 
 // Mock PDF download - in a real app, this would be a real PDF file
-const mockPdfPath = './CurrículoLilianaGonçalves.pdf';
+const mockPdfPath = './Stagelink_briefing.pdf';
 const mockPdfName = 'Application Briefing';
 
 const TestPreview: React.FC = () => {
@@ -15,7 +15,7 @@ const TestPreview: React.FC = () => {
             <FileText className="h-10 w-10 text-black mr-3" />
             <div>
               <p className="font-medium text-gray-900">{mockPdfName}</p>
-              <p className="text-sm text-gray-500">PDF Document • 2.4 MB</p>
+              <p className="text-sm text-gray-500">PDF Document • 1.3 MB</p>
             </div>
           </div>
         </div>
