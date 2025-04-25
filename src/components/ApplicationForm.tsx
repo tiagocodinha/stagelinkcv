@@ -180,7 +180,6 @@ const ApplicationForm: React.FC = () => {
           <input
             type="file"
             accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            className="block w-full text-sm text-gray-500 [&::file-selector-button]:hidden"
             {...register('cv')}
           />
           <button
