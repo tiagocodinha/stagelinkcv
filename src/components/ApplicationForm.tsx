@@ -19,9 +19,19 @@ const applicationSchema = z.object({
   whyChooseYou: z.string().optional(),
   additionalInfo: z.string().optional(),
   fileShareLink: z.string().url({ message: 'Please enter a valid URL for your shared files' }).min(1, { message: 'File sharing link is required' }),
+  cv: z.any()
+    .refine((file) => file?.length > 0, { message: 'CV is required' })
+    .refine((file) => file?.[0]?.size <= 10000000, { message: 'File size should be less than 10MB' })
+    .refine(
+      (file) => ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'].includes(file?.[0]?.type),
+      { message: 'Invalid file type. Please upload a PDF, DOC, DOCX, PNG, or JPG file' }
+    ),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
+
+const MAX_UPLOAD_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
 
 const ApplicationForm: React.FC = () => {
   const { supabase } = useSupabase();
@@ -32,8 +42,10 @@ const ApplicationForm: React.FC = () => {
   const { 
     control, 
     handleSubmit, 
-    formState: { errors, isValid }, 
-    reset 
+    formState: { errors, isValid },
+    reset,
+    register,
+    watch,
   } = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),
     mode: 'onChange',
@@ -51,33 +63,90 @@ const ApplicationForm: React.FC = () => {
     }
   });
 
+  const cvFile = watch('cv')?.[0];
+
+  const sanitizeFileName = (fileName: string): string => {
+    // Remove special characters and spaces, keep extension
+    const name = fileName.split('.').slice(0, -1).join('.');
+    const ext = fileName.split('.').pop();
+    const sanitized = name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+    return `${sanitized}.${ext}`;
+  };
+
+  const uploadFileWithRetry = async (
+    file: File,
+    fileName: string,
+    retries = MAX_UPLOAD_RETRIES
+  ): Promise<string> => {
+    try {
+      if (!supabase) throw new Error('Supabase client not initialized');
+
+      const { error: uploadError, data: uploadData } = await supabase.storage
+        .from('applications')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        if (retries > 0) {
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          return uploadFileWithRetry(file, fileName, retries - 1);
+        }
+        throw new Error(`Failed to upload CV after ${MAX_UPLOAD_RETRIES} attempts: ${uploadError.message}`);
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('applications')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`File upload failed: ${error.message}`);
+      }
+      throw new Error('An unexpected error occurred during file upload');
+    }
+  };
+
   const onSubmit: SubmitHandler<ApplicationFormData> = async (data) => {
     setIsSubmitting(true);
     setSubmitError('');
     
     try {
-      if (supabase) {
-        const { error } = await supabase
-          .from('applications')
-          .insert([
-            { 
-              ...data,
-              submittedAt: new Date().toISOString()
-            }
-          ]);
-          
-        if (error) throw new Error(error.message);
+      if (!supabase) throw new Error('Supabase client not initialized');
+
+      // Generate a unique, sanitized filename
+      const timestamp = Date.now();
+      const sanitizedFileName = sanitizeFileName(data.cv[0].name);
+      const uniqueFileName = `${timestamp}-${sanitizedFileName}`;
+
+      // Upload CV file with retry mechanism
+      const cvUrl = await uploadFileWithRetry(data.cv[0], uniqueFileName);
+
+      // Submit application data
+      const { error: insertError } = await supabase
+        .from('applications')
+        .insert([{ 
+          ...data,
+          cv: cvUrl,
+          submittedAt: new Date().toISOString()
+        }]);
+        
+      if (insertError) {
+        throw new Error(`Failed to submit application: ${insertError.message}`);
       }
       
       setSubmitSuccess(true);
       reset();
       
     } catch (error) {
+      let errorMessage = 'An unknown error occurred';
+      
       if (error instanceof Error) {
-        setSubmitError(error.message);
-      } else {
-        setSubmitError('An unknown error occurred');
+        errorMessage = error.message;
       }
+      
+      setSubmitError(
+        `We encountered an issue while submitting your application. ${errorMessage} Please try again, and if the problem persists, contact support.`
+      );
       console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
@@ -102,6 +171,42 @@ const ApplicationForm: React.FC = () => {
       </div>
       
       <TestPreview />
+      
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Upload Your CV <span className="text-red-500">*</span>
+        </h2>
+        <div className="space-y-2">
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+            className="block w-full text-sm text-gray-500 [&::file-selector-button]:hidden"
+            {...register('cv')}
+          />
+          <button
+            type="button"
+            onClick={() => document.querySelector('input[type="file"]')?.click()}
+            className="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800 transition-colors"
+          >
+            Choose File
+          </button>
+          {errors.cv && (
+            <p className="text-sm text-red-600">{errors.cv.message}</p>
+          )}
+          {cvFile ? (
+            <p className="text-sm text-gray-500">
+              Selected file: {cvFile.name}
+            </p>
+          ) : (
+            <p className="text-sm text-gray-500">
+              No file selected
+            </p>
+          )}
+          <p className="text-sm text-gray-500">
+            Accepted formats: PDF, DOC, DOCX, PNG, JPG, JPEG (Max. 10MB)
+          </p>
+        </div>
+      </div>
       
       {submitError && (
         <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-4 mb-6">
