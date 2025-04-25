@@ -177,11 +177,6 @@ const ApplicationForm: React.FC = () => {
           Upload Your CV <span className="text-red-500">*</span>
         </h2>
         <div className="space-y-2">
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-            {...register('cv')}
-          />
           <button
             type="button"
             onClick={() => document.querySelector('input[type="file"]')?.click()}
