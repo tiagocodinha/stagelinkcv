@@ -25,7 +25,7 @@ const TestPreview: React.FC = () => {
           onClick={() => window.open(mockPdfPath, '_blank')}
         >
           <Download className="h-4 w-4 mr-2" />
-          Download
+          Preview
         </button>
       </div>
     </section>
