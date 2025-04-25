@@ -28,7 +28,7 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-center">
           <img 
-            src="./stagelinklogo.png"
+            src="https://lrytvlsyuvctghzqsjic.supabase.co/storage/v1/object/public/logo//Stagelink-logotipo-black.png"
             alt="Stagelink Logo" 
             className="h-12"
           />
