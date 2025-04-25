@@ -6,7 +6,6 @@ import { useSupabase } from '../context/SupabaseContext';
 import TestPreview from './TestPreview';
 import FormInput from './FormInput';
 import FormTextarea from './FormTextarea';
-import FileUpload from './FileUpload';
 
 // Form schema
 const applicationSchema = z.object({
@@ -19,6 +18,7 @@ const applicationSchema = z.object({
   experience: z.string().optional(),
   whyChooseYou: z.string().optional(),
   additionalInfo: z.string().optional(),
+  fileShareLink: z.string().url({ message: 'Please enter a valid URL for your shared files' }).min(1, { message: 'File sharing link is required' }),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -28,7 +28,6 @@ const ApplicationForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
   
   const { 
     control, 
@@ -47,51 +46,22 @@ const ApplicationForm: React.FC = () => {
       education: '',
       experience: '',
       whyChooseYou: '',
-      additionalInfo: ''
+      additionalInfo: '',
+      fileShareLink: '',
     }
   });
 
   const onSubmit: SubmitHandler<ApplicationFormData> = async (data) => {
-    if (files.length === 0) {
-      setSubmitError('Please upload your completed assessment');
-      return;
-    }
-
     setIsSubmitting(true);
     setSubmitError('');
     
     try {
-      let fileUrls: string[] = [];
-      
-      if (files.length > 0 && supabase) {
-        for (const file of files) {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-          const filePath = `applications/${fileName}`;
-          
-          const { error: uploadError } = await supabase.storage
-            .from('applications')
-            .upload(filePath, file);
-            
-          if (uploadError) {
-            throw new Error(`Error uploading file: ${uploadError.message}`);
-          }
-          
-          const { data: { publicUrl } } = supabase.storage
-            .from('applications')
-            .getPublicUrl(filePath);
-            
-          fileUrls.push(publicUrl);
-        }
-      }
-      
       if (supabase) {
         const { error } = await supabase
           .from('applications')
           .insert([
             { 
               ...data,
-              fileUrls,
               submittedAt: new Date().toISOString()
             }
           ]);
@@ -101,7 +71,6 @@ const ApplicationForm: React.FC = () => {
       
       setSubmitSuccess(true);
       reset();
-      setFiles([]);
       
     } catch (error) {
       if (error instanceof Error) {
@@ -260,12 +229,18 @@ const ApplicationForm: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Assessment Materials</h2>
           
           <div className="space-y-6">
-            <FileUpload
-              label="Upload Your Completed Assessment"
-              helpText="Upload the materials you created based on the test preview. You can upload multiple files (PDF, DOC, ZIP, etc.)"
-              files={files}
-              onChange={setFiles}
-              required
+            <Controller
+              name="fileShareLink"
+              control={control}
+              render={({ field }) => (
+                <FormInput
+                  label="File Sharing Link"
+                  placeholder="Enter your Google Drive, Dropbox, or other file sharing link"
+                  error={errors.fileShareLink?.message}
+                  required
+                  {...field}
+                />
+              )}
             />
             
             <Controller
