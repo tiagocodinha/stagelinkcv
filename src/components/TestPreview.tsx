@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FileText, Download } from 'lucide-react';
+import { SupabaseContext } from '../context/SupabaseContext'; // <- Importa o teu contexto!
 
-// Mock PDF download - in a real app, this would be a real PDF file
 const mockPdfPath = './Stagelink_briefing.pdf';
 const mockPdfName = 'Application Briefing';
 
 const TestPreview: React.FC = () => {
+  const supabase = useContext(SupabaseContext); // <- Usa o Supabase já inicializado!
+
+  const handleDownload = async () => {
+    try {
+      const { error } = await supabase.from('downloads').insert([
+        {
+          file_name: mockPdfName
+          // podes adicionar mais campos aqui se quiseres, mas não é obrigatório
+        }
+      ]);
+
+      if (error) {
+        console.error('Erro ao registar download:', error);
+      }
+
+      // Depois de registar o download, abrir o PDF
+      window.open(mockPdfPath, '_blank');
+    } catch (err) {
+      console.error('Erro inesperado:', err);
+      window.open(mockPdfPath, '_blank');
+    }
+  };
+
   return (
     <section className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-8">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -25,7 +48,7 @@ const TestPreview: React.FC = () => {
           <button
             type="button"
             className="bg-black hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center whitespace-nowrap"
-            onClick={() => window.open(mockPdfPath, '_blank')}
+            onClick={handleDownload}
           >
             <Download className="h-4 w-4 mr-2" />
             Preview
